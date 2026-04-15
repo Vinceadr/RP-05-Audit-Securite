@@ -7,7 +7,7 @@
 |--|--|
 | **Mission** | Audit de sécurité complet + déploiement des mesures correctives |
 | **Périmètre** | 4 VLANs · 6 équipements · Cisco · Linux · Windows · KVM |
-| **Outils** | Nmap · OpenVAS · Lynis · CIS-CAT Lite · Wapiti · pfSense |
+| **Outils** | Nmap · OpenVAS · Lynis · CIS-CAT Lite · Wapiti · Debian 12 (nftables) |
 | **Livrables** | 9 documents produits dans les délais |
 | **Durée** | 6 semaines · Deadline 28/03/2026 |
 
@@ -87,13 +87,13 @@ quadrantChart
 
 ---
 
-# Phase 2 — pfSense 2.7 · DMZ · Architecture Deny-all
-## Pare-feu stateful · Segmentation totale · IDS Snort
+# Phase 2 — Debian 12 (nftables) · DMZ · Architecture Deny-all
+## Pare-feu stateful · Segmentation totale · IDS/IPS Suricata
 
 ```mermaid
 graph TD
     WAN(["Internet / WAN"])
-    FW["pfSense 2.7\nDeny-all par défaut\nIDS Snort actif"]
+    FW["Debian 12 (nftables)\nDeny-all par défaut\nIDS/IPS Suricata actif"]
     DMZ["DMZ — 172.16.0.0/24\nServeurs Web · Mail · HAProxy"]
     LAN["LAN Interne — VLANs\nAdmin · Profs · Étudiants · Serveurs"]
     WAN -->|"HTTPS :443 uniquement"| FW
@@ -108,7 +108,7 @@ graph TD
 
 - Politique **deny-all** par défaut — chaque règle est explicite et documentée
 - DMZ **172.16.0.0/24** isolée totalement du LAN
-- IDS/IPS **Snort** actif sur interface WAN — alertes remontées dans Grafana
+- IDS/IPS **Suricata** actif sur interface WAN — alertes remontées dans Grafana
 
 ---
 
@@ -120,7 +120,7 @@ graph TD
 | **Linux** (Lynis) | 58/100 | **79/100** | **+21 pts** |
 | **Windows** (CIS-CAT) | 41.7 % | **82 %** | **+40 pts** |
 
-**Actions Linux :** SSH root=no · UFW activé · Fail2ban · auditd · services inutiles désactivés
+**Actions Linux :** SSH root=no · UFW activé · CrowdSec · auditd · services inutiles désactivés
 
 **Actions Windows :** SMBv1 désactivé · LLMNR désactivé · Credential Guard · LAPS · 12 GPOs ANSSI
 
@@ -146,10 +146,10 @@ graph LR
 | Test réalisé | Outil utilisé | Résultat |
 |------|-------|----------|
 | EternalBlue / SMBv1 | Metasploit | ✅ PASS — vulnérabilité patchée |
-| Brute force SSH | Hydra | ✅ PASS — Fail2ban bloque à J+3 |
+| Brute force SSH | Hydra | ✅ PASS — CrowdSec bloque à J+3 |
 | Pass-the-Hash Windows | Mimikatz | ✅ PASS — Credential Guard actif |
 | Telnet Cisco | Netcat | ✅ PASS — SSH v2 uniquement |
-| Scan DMZ → LAN | Nmap | ✅ PASS — pfSense bloque |
+| Scan DMZ → LAN | Nmap | ✅ PASS — Debian 12 (nftables) bloque |
 | VLAN Hopping | Yersinia | ✅ PASS — DTP désactivé |
 | Injection SQL | SQLMap | ✅ PASS — WAF HAProxy actif |
 | XSS portail web | Wapiti | ✅ PASS — CSP Headers activés |
@@ -167,7 +167,7 @@ graph LR
 
 ```mermaid
 graph LR
-    A["8 vulnérabilités\ncritiques"] -->|"pfSense + Durcissement\n+ Patches"| B["0 vulnérabilité\ncritique ✅"]
+    A["8 vulnérabilités\ncritiques"] -->|"Debian 12 (nftables) + Durcissement\n+ Patches"| B["0 vulnérabilité\ncritique ✅"]
     C["CIS-CAT\n41.7 %"] -->|"53 contrôles CIS\n12 GPOs ANSSI"| D["CIS-CAT\n82 % ✅"]
     E["Lynis\n58/100"] -->|"Hardening Level 1&2"| F["Lynis\n79/100 ✅"]
     style B fill:#1a6e2e,color:#fff
@@ -182,7 +182,7 @@ graph LR
 |-----------------|--------|
 | Rapport d'audit (périmètre + vulnérabilités + preuves) | ✅ |
 | Matrice des risques (CVSS × probabilité × impact) | ✅ |
-| Documentation pfSense + règles de filtrage | ✅ |
+| Documentation Debian 12 (nftables) + règles de filtrage | ✅ |
 | Schéma DMZ + zones de sécurité | ✅ |
 | Rapport durcissement Linux avant/après | ✅ |
 | Rapport durcissement Windows GPOs ANSSI | ✅ |

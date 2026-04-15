@@ -7,7 +7,7 @@
 |--|--|
 | **Mission** | Audit de sécurité complet + déploiement des mesures correctives |
 | **Périmètre** | 4 VLANs · 6 équipements · Cisco · Linux · Windows · KVM |
-| **Outils** | Nmap · OpenVAS · Lynis · CIS-CAT Lite · Wapiti · pfSense |
+| **Outils** | Nmap · OpenVAS · Lynis · CIS-CAT Lite · Wapiti · Debian 12 (nftables) |
 | **Livrables** | 9 documents produits dans les délais |
 | **Durée** | 6 semaines · Deadline 28/03/2026 |
 
@@ -96,13 +96,13 @@ quadrantChart
 
 ---
 
-# Phase 2 — pfSense 2.7 · DMZ · Architecture Deny-all
-## Pare-feu stateful · Segmentation totale · IDS Snort
+# Phase 2 — Debian 12 (nftables) · DMZ · Architecture Deny-all
+## Pare-feu stateful · Segmentation totale · IDS/IPS Suricata
 
 ```mermaid
 graph TD
     WAN(["🌐 Internet / WAN"])
-    FW["🔒 pfSense 2.7\nDeny-all par défaut\nIDS Snort actif"]
+    FW["🔒 Debian 12 (nftables)\nDeny-all par défaut\nIDS/IPS Suricata actif"]
     DMZ["🔴 DMZ — 172.16.0.0/24\nServeurs Web · Mail · HAProxy"]
     LAN["🔵 LAN Interne — VLANs\nAdmin · Profs · Étudiants · Serveurs"]
     WAN -->|"HTTPS :443 uniquement"| FW
@@ -118,7 +118,7 @@ graph TD
 **Ce qu'on a fait :**
 - Politique **deny-all** par défaut — chaque règle est explicite et documentée
 - DMZ **172.16.0.0/24** isolée totalement du LAN (même si un serveur web est piraté, le pirate ne peut pas atteindre le réseau interne)
-- IDS/IPS **Snort** actif sur interface WAN — détecte les attaques en temps réel
+- IDS/IPS **Suricata** actif sur interface WAN — détecte les attaques en temps réel
 
 ---
 
@@ -136,7 +136,7 @@ graph LR
     B["🟢 Linux après\n79/100\n+21 pts"]
     C["🔴 Windows avant\n41.7 %"]
     D["🟢 Windows après\n82 %\n+40 pts"]
-    A -->|"SSH sécurisé, UFW,\nFail2ban, auditd"| B
+    A -->|"SSH sécurisé, UFW,\nCrowdSec, auditd"| B
     C -->|"SMBv1 off, LLMNR off,\nCredential Guard, LAPS,\n12 GPOs ANSSI"| D
     style B fill:#1a6e2e,color:#fff
     style D fill:#1a6e2e,color:#fff
@@ -144,7 +144,7 @@ graph LR
     style C fill:#8b1a1a,color:#fff
 ```
 
-**Actions Linux :** SSH root=no · UFW activé · Fail2ban · auditd · services inutiles désactivés
+**Actions Linux :** SSH root=no · UFW activé · CrowdSec · auditd · services inutiles désactivés
 
 **Actions Windows :** SMBv1 désactivé · LLMNR désactivé · Credential Guard · LAPS · 12 GPOs ANSSI
 
@@ -156,10 +156,10 @@ graph LR
 | Test réalisé | Outil utilisé | Résultat |
 |------|-------|----------|
 | EternalBlue / SMBv1 | Metasploit | ✅ PASS — vulnérabilité patchée |
-| Brute force SSH | Hydra | ✅ PASS — Fail2ban bloque à J+3 |
+| Brute force SSH | Hydra | ✅ PASS — CrowdSec bloque à J+3 |
 | Pass-the-Hash Windows | Mimikatz | ✅ PASS — Credential Guard actif |
 | Telnet Cisco | Netcat | ✅ PASS — SSH v2 uniquement |
-| Scan DMZ → LAN | Nmap | ✅ PASS — pfSense bloque |
+| Scan DMZ → LAN | Nmap | ✅ PASS — Debian 12 (nftables) bloque |
 | VLAN Hopping | Yersinia | ✅ PASS — DTP désactivé |
 | Injection SQL | SQLMap | ✅ PASS — WAF HAProxy actif |
 | XSS portail web | Wapiti | ✅ PASS — CSP Headers activés |
@@ -184,8 +184,8 @@ pie title 12 Tests de pénétration
 ```mermaid
 graph LR
     A["🔴 AVANT\n8 failles critiques\nCIS-CAT 41.7%\nLynis 58/100\nAucun pare-feu"]
-    B["🟢 APRÈS\n0 faille critique\nCIS-CAT 82%\nLynis 79/100\npfSense + Snort"]
-    A -->|"pfSense + Durcissement\n+ Patches + Pentests"| B
+    B["🟢 APRÈS\n0 faille critique\nCIS-CAT 82%\nLynis 79/100\nDebian 12 (nftables) + Suricata"]
+    A -->|"Debian 12 (nftables) + Durcissement\n+ Patches + Pentests"| B
     style A fill:#8b1a1a,color:#fff
     style B fill:#1a6e2e,color:#fff
 ```
@@ -194,7 +194,7 @@ graph LR
 |-----------------|--------|
 | Rapport d'audit (périmètre + vulnérabilités + preuves) | ✅ |
 | Matrice des risques (CVSS × probabilité × impact) | ✅ |
-| Documentation pfSense + règles de filtrage | ✅ |
+| Documentation Debian 12 (nftables) + règles de filtrage | ✅ |
 | Schéma DMZ + zones de sécurité | ✅ |
 | Rapport durcissement Linux avant/après | ✅ |
 | Rapport durcissement Windows GPOs ANSSI | ✅ |
@@ -212,15 +212,15 @@ graph LR
 
 ---
 
-# CHEAT SHEET 1 — pfSense : Ajouter / Modifier une règle pare-feu
+# CHEAT SHEET 1 — Debian 12 (nftables) : Ajouter / Modifier une règle pare-feu
 
-## C'est quoi une règle pfSense ?
+## C'est quoi une règle pare-feu Debian 12 (nftables) ?
 
 C'est une instruction qui dit au pare-feu : **autorise** ou **bloque** tel trafic. Notre politique est **deny-all** = tout est bloqué sauf ce qu'on autorise explicitement.
 
 ```mermaid
 flowchart TD
-    START["📥 Un paquet réseau arrive sur pfSense"]
+    START["📥 Un paquet réseau arrive sur Debian 12 (nftables)"]
     R1{"Règle 1 :\ncorrespond ?"}
     R2{"Règle 2 :\ncorrespond ?"}
     R3{"Règle 3 :\ncorrespond ?"}
@@ -245,7 +245,7 @@ flowchart TD
 
 | Étape | Ce que tu fais | Explication |
 |-------|---------------|-------------|
-| 1 | Ouvrir pfSense : `https://192.168.1.1` | L'adresse du pare-feu dans le navigateur |
+| 1 | Ouvrir Debian 12 (nftables) : `https://192.168.1.1` | L'adresse du pare-feu dans le navigateur |
 | 2 | Menu **Firewall > Rules** | C'est là que sont toutes les règles |
 | 3 | Choisir l'interface | **WAN** = ce qui vient d'internet · **LAN** = réseau interne · **DMZ** = serveurs exposés |
 | 4 | Cliquer **Add ↑** | La flèche vers le haut = ajouter en premier (priorité haute) |
@@ -264,14 +264,14 @@ flowchart TD
 
 ---
 
-# CHEAT SHEET 2 — pfSense : DMZ, NAT et Snort expliqués
+# CHEAT SHEET 2 — Debian 12 (nftables) : DMZ, NAT et Suricata expliqués
 
 ## C'est quoi la DMZ ?
 
 ```mermaid
 graph TD
     INTERNET["🌐 Internet\n(tout le monde)"]
-    PFSENSE["🔒 pfSense\n(pare-feu)"]
+    PFSENSE["🔒 Debian 12 (nftables)\n(pare-feu)"]
     DMZ["🔴 DMZ = Zone Démilitarisée\n172.16.0.0/24\nServeurs web, mail\nAccessibles depuis internet"]
     LAN["🔵 LAN = Réseau Interne\nPCs, Active Directory\nIMPOSSIBLE d'y accéder\ndepuis la DMZ"]
 
@@ -298,14 +298,14 @@ graph TD
 | 5 | Redirect target port : **443** |
 | 6 | **Save + Apply Changes** |
 
-## Snort (IDS/IPS) — C'est quoi ?
+## Suricata (IDS/IPS) — C'est quoi ?
 
-**Snort** analyse tout le trafic réseau et détecte les attaques connues (comme un antivirus pour le réseau).
+**Suricata** analyse tout le trafic réseau et détecte les attaques connues (comme un antivirus pour le réseau).
 
 - **IDS** = Intrusion Detection System → il **détecte** et **alerte**
 - **IPS** = Intrusion Prevention System → il **bloque** automatiquement
 
-Pour voir les alertes : **Services > Snort > Alerts**
+Pour voir les alertes : **Services > Suricata > Alerts**
 
 ---
 
@@ -349,7 +349,7 @@ SSH = le protocole pour se connecter à un serveur Linux à distance (remplace T
 ```mermaid
 flowchart LR
     ADMIN["👨‍💻 Admin"] -->|"SSH chiffré\nport 22"| SERVEUR["🖥️ Serveur Linux"]
-    PIRATE["🏴‍☠️ Pirate"] -->|"❌ Telnet désactivé\n❌ Root interdit\n❌ Fail2ban après 3 essais"| SERVEUR
+    PIRATE["🏴‍☠️ Pirate"] -->|"❌ Telnet désactivé\n❌ Root interdit\n❌ CrowdSec après 3 essais"| SERVEUR
 ```
 
 **Fichier de config :** `/etc/ssh/sshd_config`
@@ -372,13 +372,13 @@ flowchart LR
 | `sudo ufw allow from 192.168.40.0/24 to any port 3000` | Autorise le port 3000 (Grafana) uniquement depuis le réseau local |
 | `sudo ufw status verbose` | Affiche toutes les règles actives |
 
-## Fail2ban — Anti brute-force
+## CrowdSec — Anti brute-force
 
-Fail2ban surveille les logs et **bannit automatiquement** les IPs qui font trop de tentatives échouées.
+CrowdSec surveille les logs et **bannit automatiquement** les IPs qui font trop de tentatives échouées.
 
 | Commande | Ce que ça fait |
 |----------|---------------|
-| `sudo fail2ban-client status sshd` | Montre combien d'IPs sont actuellement bannies |
+| `sudo crowdsec-client status sshd` | Montre combien d'IPs sont actuellement bannies |
 
 > Config : après **3 essais ratés** → IP bannie pendant **1 heure**
 
@@ -459,7 +459,7 @@ flowchart TD
 | Test | Commande | Explication en français |
 |------|---------|----------------------|
 | **EternalBlue** | `msfconsole` puis `use exploit/windows/smb/ms17_010_eternalblue` puis `set RHOSTS 192.168.40.5` puis `run` | Lance Metasploit, charge l'exploit EternalBlue, cible le serveur Windows. Si ça échoue = PASS (SMBv1 désactivé). |
-| **Brute force SSH** | `hydra -l admin -P wordlist.txt ssh://192.168.40.2` | Essaie plein de mots de passe sur SSH. `-l admin` = login · `-P wordlist.txt` = liste de mots de passe. Fail2ban doit bloquer après 3 essais. |
+| **Brute force SSH** | `hydra -l admin -P wordlist.txt ssh://192.168.40.2` | Essaie plein de mots de passe sur SSH. `-l admin` = login · `-P wordlist.txt` = liste de mots de passe. CrowdSec doit bloquer après 3 essais. |
 | **Injection SQL** | `sqlmap -u "http://site/page?id=1" --dbs` | Teste si le paramètre `id` est vulnérable à l'injection SQL. `--dbs` = essaie de lister les bases de données. |
 | **Vérifier TLS** | `testssl.sh 192.168.40.5:443` | Vérifie que le serveur utilise TLS 1.3 (sécurisé) et pas d'anciennes versions vulnérables. |
 
