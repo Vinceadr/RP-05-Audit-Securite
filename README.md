@@ -93,8 +93,6 @@ L'objectif était d'identifier les vulnérabilités, de déployer une architectu
 | `RP-05-ANDREO-Vincent.docx` | Rapport technique complet (4 phases, scripts, captures) |
 | `Fiche-RP05-ANDREO-Vincent.docx` | Fiche officielle ANNEXE 7-1-A (formulaire BTS) |
 | `Présentation-5min-RP05-ANDREO-Vincent.docx` | Texte de présentation orale 5 minutes |
-| `gamma-rp05.md` | Résumé structuré + cheat sheets Markdown |
-| `gamma-rp05-complet.md` | Version complète avec diagrammes Mermaid |
 
 ---
 
