@@ -15,11 +15,7 @@ L'objectif était d'identifier les vulnérabilités, de déployer une architectu
 
 ## Architecture déployée
 
-```
-
-![Architecture réseau](network_architecture.svg)
-
-```
+![Architecture réseau](assets/network_architecture.svg)
 ---
 
 ## Déroulement en 4 phases
