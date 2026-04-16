@@ -16,27 +16,10 @@ L'objectif était d'identifier les vulnérabilités, de déployer une architectu
 ## Architecture déployée
 
 ```
-[Internet]
-    |
-[Debian 12 — nftables pare-feu] ← 192.168.40.3
-    |          |
-[DMZ]      [LAN interne]
-  |
-[Serveur Web Nginx]  [Serveur MySQL]
+
+![Architecture réseau](network_architecture.svg)
+
 ```
-
-| Composant | Technologie | Rôle |
-|-----------|-------------|------|
-| Pare-feu / Filtrage | **nftables** (Debian 12) | Politique deny-all, DMZ isolée, NAT |
-| IDS/IPS | **Suricata** | Détection intrusion en temps réel (ruleset ET/Open) |
-| Protection brute-force | **CrowdSec** | IPS collaboratif + bouncer nftables |
-| Hyperviseur | **KVM/QEMU** | Virtualisation des VMs (Debian 12) |
-| Scan de vulnérabilités | **OpenVAS / GVM** | Détection CVE sur l'ensemble des hôtes |
-| Scan réseau | **Nmap 7.95** | Découverte hôtes, ports ouverts, fingerprinting OS |
-| Audit de durcissement | **Lynis** | Score CIS Benchmark — 79/100 |
-| Pentest Web | **Nikto, Dirb, SQLMap** | Audit applicatif couche 7 |
-| Pentest réseau | **Metasploit, Hydra** | Exploitation de vulnérabilités résiduelles |
-
 ---
 
 ## Déroulement en 4 phases
