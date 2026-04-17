@@ -1,11 +1,14 @@
-﻿<svg width="720" height="560" viewBox="0 0 720 560" xmlns="http://www.w3.org/2000/svg">
+﻿<svg width="720" height="570" viewBox="0 0 720 570" xmlns="http://www.w3.org/2000/svg">
   <title>Architecture reseau RP-05 - nftables DMZ Traefik MariaDB</title>
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M2 1L8 5L2 9" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round"/>
     </marker>
-    <marker id="arr-dash" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <marker id="arr-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M2 1L8 5L2 9" fill="none" stroke="#e67e22" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <marker id="arr-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1abc9c" stroke-width="1.5" stroke-linecap="round"/>
     </marker>
   </defs>
 
@@ -15,65 +18,59 @@
   <text x="360" y="56" text-anchor="middle" fill="#bdc3c7" font-size="10" font-family="sans-serif">HTTP 80 / HTTPS 443</text>
 
   <!-- Arrow Internet -> Firewall -->
-  <line x1="360" y1="70" x2="360" y2="105" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="360" y1="70" x2="360" y2="108" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
 
   <!-- FIREWALL nftables -->
-  <rect x="240" y="105" width="240" height="55" rx="8" fill="#c0392b" stroke="#922b21" stroke-width="2"/>
-  <text x="360" y="128" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">Firewall nftables</text>
-  <text x="360" y="148" text-anchor="middle" fill="#fadbd8" font-size="10" font-family="sans-serif">192.168.40.3 — Debian 12</text>
+  <rect x="240" y="108" width="240" height="55" rx="8" fill="#c0392b" stroke="#922b21" stroke-width="2"/>
+  <text x="360" y="131" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">Firewall nftables</text>
+  <text x="360" y="151" text-anchor="middle" fill="#fadbd8" font-size="10" font-family="sans-serif">192.168.40.3 — Debian 12</text>
 
   <!-- Arrow Firewall -> DMZ -->
-  <line x1="360" y1="160" x2="360" y2="195" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="360" y1="163" x2="360" y2="198" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
 
   <!-- DMZ ZONE -->
-  <rect x="80" y="195" width="560" height="170" rx="12" fill="#fef9e7" stroke="#f39c12" stroke-width="2" stroke-dasharray="6,3"/>
-  <text x="110" y="215" fill="#e67e22" font-size="11" font-family="sans-serif" font-weight="bold">DMZ</text>
+  <rect x="180" y="198" width="360" height="155" rx="12" fill="#fef9e7" stroke="#f39c12" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="210" y="218" fill="#e67e22" font-size="11" font-family="sans-serif" font-weight="bold">DMZ</text>
 
-  <!-- Traefik -->
-  <rect x="110" y="220" width="200" height="120" rx="8" fill="#1abc9c" stroke="#148f77" stroke-width="2"/>
-  <text x="210" y="245" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">Traefik</text>
-  <text x="210" y="262" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">Reverse Proxy</text>
-  <text x="210" y="277" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">Port 80 / 443</text>
-  <text x="210" y="292" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">TLS Termination</text>
-  <text x="210" y="310" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">Routage HTTP</text>
+  <!-- Traefik (centré dans la DMZ) -->
+  <rect x="235" y="224" width="250" height="110" rx="8" fill="#1abc9c" stroke="#148f77" stroke-width="2"/>
+  <text x="360" y="250" text-anchor="middle" fill="white" font-size="14" font-family="sans-serif" font-weight="bold">Traefik</text>
+  <text x="360" y="268" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">Reverse Proxy — Port 80 / 443</text>
+  <text x="360" y="284" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">TLS Termination (HTTPS)</text>
+  <text x="360" y="300" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">Routage HTTP vers backend LAN</text>
+  <text x="360" y="316" text-anchor="middle" fill="#d1f2eb" font-size="10" font-family="sans-serif">Dashboard :8080 (interne)</text>
 
-  <!-- Nginx -->
-  <rect x="410" y="220" width="200" height="120" rx="8" fill="#27ae60" stroke="#1e8449" stroke-width="2"/>
-  <text x="510" y="245" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">Nginx</text>
-  <text x="510" y="262" text-anchor="middle" fill="#d5f5e3" font-size="10" font-family="sans-serif">Serveur Web</text>
-  <text x="510" y="277" text-anchor="middle" fill="#d5f5e3" font-size="10" font-family="sans-serif">Expose via Traefik</text>
-  <text x="510" y="292" text-anchor="middle" fill="#d5f5e3" font-size="10" font-family="sans-serif">Port interne 8080</text>
-  <text x="510" y="310" text-anchor="middle" fill="#d5f5e3" font-size="10" font-family="sans-serif">KVM/QEMU VM</text>
+  <!-- Arrows DMZ -> LAN -->
+  <!-- Traefik -> App Web -->
+  <line x1="290" y1="353" x2="220" y2="405" stroke="#1abc9c" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-teal)"/>
+  <text x="215" y="390" fill="#148f77" font-size="9" font-family="sans-serif" text-anchor="middle">HTTP interne</text>
 
-  <!-- Arrow Traefik -> Nginx inside DMZ -->
-  <line x1="310" y1="280" x2="410" y2="280" stroke="#148f77" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr)"/>
-
-  <!-- Arrow DMZ -> LAN (Firewall rule) -->
-  <line x1="360" y1="365" x2="360" y2="400" stroke="#e67e22" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr-dash)"/>
-  <text x="365" y="390" fill="#e67e22" font-size="9" font-family="sans-serif">TCP 3306 strict</text>
+  <!-- Traefik -> MariaDB -->
+  <line x1="430" y1="353" x2="500" y2="405" stroke="#e67e22" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr-orange)"/>
+  <text x="505" y="390" fill="#e67e22" font-size="9" font-family="sans-serif" text-anchor="middle">TCP 3306 strict</text>
 
   <!-- LAN ZONE -->
-  <rect x="80" y="400" width="560" height="145" rx="12" fill="#eaf4fb" stroke="#2e86c1" stroke-width="2" stroke-dasharray="6,3"/>
-  <text x="110" y="420" fill="#2471a3" font-size="11" font-family="sans-serif" font-weight="bold">LAN — 192.168.40.0/24</text>
+  <rect x="80" y="405" width="560" height="150" rx="12" fill="#eaf4fb" stroke="#2e86c1" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="110" y="425" fill="#2471a3" font-size="11" font-family="sans-serif" font-weight="bold">LAN — 192.168.40.0/24</text>
+
+  <!-- App Web Backend -->
+  <rect x="100" y="433" width="150" height="105" rx="8" fill="#8e44ad" stroke="#6c3483" stroke-width="2"/>
+  <text x="175" y="457" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif" font-weight="bold">App Web</text>
+  <text x="175" y="474" text-anchor="middle" fill="#e8daef" font-size="10" font-family="sans-serif">Backend applicatif</text>
+  <text x="175" y="490" text-anchor="middle" fill="#e8daef" font-size="10" font-family="sans-serif">Port interne</text>
+  <text x="175" y="506" text-anchor="middle" fill="#e8daef" font-size="10" font-family="sans-serif">KVM/QEMU</text>
 
   <!-- MariaDB -->
-  <rect x="110" y="428" width="160" height="100" rx="8" fill="#2980b9" stroke="#1a5276" stroke-width="2"/>
-  <text x="190" y="453" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">MariaDB</text>
-  <text x="190" y="470" text-anchor="middle" fill="#d6eaf8" font-size="10" font-family="sans-serif">Port 3306</text>
-  <text x="190" y="485" text-anchor="middle" fill="#d6eaf8" font-size="10" font-family="sans-serif">Réseau interne</text>
-  <text x="190" y="500" text-anchor="middle" fill="#d6eaf8" font-size="10" font-family="sans-serif">Non exposé internet</text>
+  <rect x="275" y="433" width="150" height="105" rx="8" fill="#2980b9" stroke="#1a5276" stroke-width="2"/>
+  <text x="350" y="457" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif" font-weight="bold">MariaDB</text>
+  <text x="350" y="474" text-anchor="middle" fill="#d6eaf8" font-size="10" font-family="sans-serif">Port 3306</text>
+  <text x="350" y="490" text-anchor="middle" fill="#d6eaf8" font-size="10" font-family="sans-serif">Réseau interne</text>
+  <text x="350" y="506" text-anchor="middle" fill="#d6eaf8" font-size="10" font-family="sans-serif">Non exposé internet</text>
 
-  <!-- Postes de travail -->
-  <rect x="290" y="428" width="160" height="100" rx="8" fill="#5d6d7e" stroke="#2c3e50" stroke-width="2"/>
-  <text x="370" y="453" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">Postes</text>
-  <text x="370" y="470" text-anchor="middle" fill="#d5d8dc" font-size="10" font-family="sans-serif">Clients internes</text>
-  <text x="370" y="485" text-anchor="middle" fill="#d5d8dc" font-size="10" font-family="sans-serif">192.168.40.x</text>
-  <text x="370" y="500" text-anchor="middle" fill="#d5d8dc" font-size="10" font-family="sans-serif">VPN optionnel</text>
-
-  <!-- Services internes -->
-  <rect x="470" y="428" width="160" height="100" rx="8" fill="#7f8c8d" stroke="#566573" stroke-width="2"/>
-  <text x="550" y="453" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" font-weight="bold">Services</text>
-  <text x="550" y="470" text-anchor="middle" fill="#ecf0f1" font-size="10" font-family="sans-serif">Serveurs internes</text>
-  <text x="550" y="485" text-anchor="middle" fill="#ecf0f1" font-size="10" font-family="sans-serif">Administration</text>
-  <text x="550" y="500" text-anchor="middle" fill="#ecf0f1" font-size="10" font-family="sans-serif">Monitoring</text>
+  <!-- Postes / Services -->
+  <rect x="450" y="433" width="170" height="105" rx="8" fill="#5d6d7e" stroke="#2c3e50" stroke-width="2"/>
+  <text x="535" y="457" text-anchor="middle" fill="white" font-size="12" font-family="sans-serif" font-weight="bold">Postes / Services</text>
+  <text x="535" y="474" text-anchor="middle" fill="#d5d8dc" font-size="10" font-family="sans-serif">Clients internes</text>
+  <text x="535" y="490" text-anchor="middle" fill="#d5d8dc" font-size="10" font-family="sans-serif">192.168.40.x</text>
+  <text x="535" y="506" text-anchor="middle" fill="#d5d8dc" font-size="10" font-family="sans-serif">Administration</text>
 </svg>
