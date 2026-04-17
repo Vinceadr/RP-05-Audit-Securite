@@ -41,7 +41,8 @@ L'objectif était d'identifier les vulnérabilités, de déployer une architectu
 - Configuration SSH : port non standard, désactivation root, authentification par clé uniquement
 - Déploiement **Suricata** (IDS/IPS multi-thread) avec règles ET/Open
 - Déploiement **CrowdSec** avec collections : `crowdsecurity/linux`, `crowdsecurity/sshd`, `crowdsecurity/nginx`
-- Score **Lynis : 79/100** (vs 42/100 avant durcissement)
+- Déploiement **WireGuard** (wg-easy) — VPN managé via interface web (port 51820/UDP, UI 51821/TCP)
+- Score **Lynis : 69/100** (vs 42/100 avant durcissement)
 - Gestion des exceptions documentées : `ip_forward` (requis par KVM), faux positifs CVE
 
 ### Phase 4 — Tests d'intrusion (Semaine 4)
@@ -57,11 +58,13 @@ L'objectif était d'identifier les vulnérabilités, de déployer une architectu
 
 | Indicateur | Avant | Après |
 |------------|-------|-------|
-| Score Lynis | 42/100 | **79/100** |
+| Score Lynis | 42/100 | **69/100** |
 | CVE critiques ouvertes | 8 | **0** |
-| Ports exposés inutilement | 17 | **3** |
-| Tests d'intrusion réussis | N/A | **0/12** |
+| Ports exposés inutilement | 17 | **1** (container école) |
+| Tests d'intrusion réussis | N/A | **0/12**
+| WireGuard VPN | Non déployé | **✅ Actif** (healthy) |
 | Services avec auth par clé | 0% | **100%** |
+| IPs bannies CrowdSec (CAPI) | 0 | **16 077** |
 
 ---
 
@@ -118,3 +121,5 @@ tail -f /var/log/suricata/fast.log
 ---
 
 *Réalisation professionnelle validée dans le cadre de l'examen E5/E6 BTS SIO.*
+
+
