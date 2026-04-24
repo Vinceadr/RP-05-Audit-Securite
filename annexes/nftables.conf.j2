@@ -1,0 +1,48 @@
+#!/usr/sbin/nft -f
+# nftables.conf — deploye par Ansible
+# Role: security | Template: nftables.conf.j2
+
+flush ruleset
+
+table inet filter {
+
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Loopback
+        iif "lo" accept
+
+        # Connexions etablies / associees
+        ct state established,related accept
+        ct state invalid drop
+
+        # ICMP (ping)
+        ip  protocol icmp  accept
+        ip6 nexthdr  icmpv6 accept
+
+        # SSH
+        tcp dport {{ ssh_port }} ct state new accept
+
+{% if monitoring_enabled %}
+        # Monitoring (Prometheus, Grafana, Loki, Node Exporter, AlertManager)
+        tcp dport { 9090, 3000, 9100, 3100, 9093, 8085, 9116 } accept
+{% endif %}
+
+        # CrowdSec LAPI (container -> bouncer host)
+        tcp dport 8080 ip saddr 127.0.0.1 accept
+
+        # HTTP / HTTPS
+        tcp dport { 80, 443, 587 } accept
+
+        # Log et drop tout le reste
+        log prefix "[nftables DROP] " flags all counter drop
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy accept;
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
